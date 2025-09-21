@@ -37,9 +37,13 @@ export class PushManager {
     }
 
     const registration = await navigator.serviceWorker.ready;
+
+    // Convert Uint8Array to ArrayBuffer to ensure compatibility
+    const applicationServerKey = this.urlBase64ToUint8Array(this.vapidPublicKey).buffer as ArrayBuffer;
+
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
+      applicationServerKey, // Pass the ArrayBuffer
     });
 
     return subscription;
