@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Notes - Offline</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: white;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            padding: 40px;
+            background: rgba(31, 41, 55, 0.8);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(55, 65, 81, 0.3);
+        }
+        
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        
+        h1 {
+            margin: 0 0 16px 0;
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        
+        p {
+            color: #d1d5db;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        
+        .features {
+            list-style: none;
+            padding: 0;
+            margin: 24px 0;
+        }
+        
+        .features li {
+            padding: 8px 0;
+            color: #9ca3af;
+        }
+        
+        .features li:before {
+            content: '✓ ';
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.2s;
+            margin-top: 16px;
+        }
+        
+        button:hover {
+            background: #2563eb;
+        }
+        
+        .status {
+            margin-top: 24px;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            color: #fca5a5;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📝</div>
+        <h1>You're Offline</h1>
+        <p>No worries! PWA Notes works perfectly offline. All your notes are saved locally and will sync when you're back online.</p>
+        
+        <ul class="features">
+            <li>Create and edit notes offline</li>
+            <li>All data saved locally</li>
+            <li>Auto-sync when reconnected</li>
+            <li>Full PWA functionality</li>
+        </ul>
+        
+        <button onclick="window.location.reload()">
+            🔄 Try Again
+        </button>
+        
+        <button onclick="goHome()" style="margin-left: 12px; background: #6b7280;">
+            🏠 Go to App
+        </button>
+        
+        <div class="status">
+            <strong>Connection Status:</strong> <span id="status">Offline</span>
+        </div>
+    </div>
+
+    <script>
+        function goHome() {
+            window.location.href = '/';
+        }
+        
+        function updateStatus() {
+            const status = document.getElementById('status');
+            const statusDiv = status.parentElement;
+            
+            if (navigator.onLine) {
+                status.textContent = 'Online';
+                statusDiv.style.background = 'rgba(16, 185, 129, 0.1)';
+                statusDiv.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                statusDiv.style.color = '#86efac';
+                
+                // Auto redirect when back online
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            } else {
+                status.textContent = 'Offline';
+                statusDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+                statusDiv.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                statusDiv.style.color = '#fca5a5';
+            }
+        }
+        
+        // Update status on load
+        updateStatus();
+        
+        // Listen for connectivity changes
+        window.addEventListener('online', updateStatus);
+        window.addEventListener('offline', updateStatus);
+    </script>
+</body>
+</html>
