@@ -49,6 +49,42 @@ export default function PushNotifications({
     });
   };
 
+  // New function to test cross-device notifications
+  const handleTestCrossDevice = async () => {
+    try {
+      const response = await fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "created",
+          noteTitle: "Test Cross-Device Note",
+          noteContent:
+            "This is a test to check if cross-device notifications work!",
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        await showLocalNotification("Cross-Device Test Sent! 📱", {
+          body: `Sent to ${result.sent}/${result.total} devices`,
+          tag: "cross-device-test",
+        });
+      } else {
+        await showLocalNotification("Test Failed ❌", {
+          body: result.error || "Failed to send cross-device notification",
+          tag: "cross-device-error",
+        });
+      }
+    } catch (error) {
+      console.error("Error testing cross-device notification:", error);
+      await showLocalNotification("Test Error ❌", {
+        body: "Failed to send cross-device test notification",
+        tag: "cross-device-error",
+      });
+    }
+  };
+
   if (!isSupported) {
     return (
       <div className={`text-xs text-gray-400 ${className}`}>
@@ -77,12 +113,21 @@ export default function PushNotifications({
         </button>
 
         {isSubscribed && (
-          <button
-            onClick={handleTestNotification}
-            className="px-3 py-2 border border-gray-600 rounded-md text-sm hover:bg-gray-700 transition-colors"
-          >
-            🧪 Test Notification
-          </button>
+          <>
+            <button
+              onClick={handleTestNotification}
+              className="px-3 py-2 border border-gray-600 rounded-md text-sm hover:bg-gray-700 transition-colors"
+            >
+              🧪 Test Local
+            </button>
+
+            <button
+              onClick={handleTestCrossDevice}
+              className="px-3 py-2 border border-blue-600 rounded-md text-sm hover:bg-blue-700 transition-colors"
+            >
+              📱 Test Cross-Device
+            </button>
+          </>
         )}
       </div>
 
